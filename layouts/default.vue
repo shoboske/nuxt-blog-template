@@ -1,45 +1,18 @@
 <template>
-  <div>
-    <nav
-      class="navbar header has-shadow is-primary"
-      role="navigation"
-      aria-label="main navigation"
-    >
-      <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-          <img src="~assets/buefy.png" alt="Buefy" height="28" />
-        </a>
-
-        <div class="navbar-burger">
-          <span />
-          <span />
-          <span />
-        </div>
-      </div>
-    </nav>
-
-    <section class="main-content columns">
-      <aside class="column is-2 section">
-        <p class="menu-label is-hidden-touch">General</p>
-        <ul class="menu-list">
-          <li v-for="(item, key) of items" :key="key">
-            <NuxtLink :to="item.to" exact-active-class="is-active">
-              <b-icon :icon="item.icon" /> {{ item.title }}
-            </NuxtLink>
-          </li>
-        </ul>
-      </aside>
-
-      <div class="container column is-10">
-        <Nuxt />
-      </div>
-    </section>
+  <div
+    :class="`site-layout-width-${$siteConfig.layout.width} posts-theme-${$siteConfig.posts.theme}`"
+  >
+    <site-nav />
+    <nuxt />
+    <news-letter-slide-out v-if="$siteConfig.newsletter.on" />
+    <site-footer></site-footer>
   </div>
 </template>
 
 <script>
+import 'animate.css/animate.min.css'
 export default {
-  name: 'DefaultLayout',
+  transition: 'slide-fade',
   data() {
     return {
       items: [
@@ -55,6 +28,80 @@ export default {
         },
       ],
     }
+  },
+  head() {
+    return {
+      title: `${this.$store.state.title} | ${this.$siteConfig.siteName}`,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.$store.state.subtitle,
+        },
+        {
+          hid: 'og:description',
+          property: 'og:description',
+          content: this.$store.state.subtitle,
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.$store.state.title,
+        },
+        {
+          hid: 'og:image',
+          property: 'og:image',
+          content: this.$store.state.featureImage
+            ? (process.env.URL ? process.env.URL : '') +
+              require(`~/assets${this.$store.state.featureImage}`)
+            : '',
+        },
+        {
+          hid: 'og:url',
+          property: 'og:url',
+          content: this.url,
+        },
+        {
+          hid: 'twitter:card',
+          name: 'twitter:card',
+          content: `summary_large_image`,
+        },
+        {
+          hid: 'og:site_name',
+          name: 'og:site_name',
+          content: this.$siteConfig.siteName,
+        },
+      ],
+    }
+  },
+  watch: {
+    $route(to, from) {
+      this.$eventBus.$emit('route-changed', this.$route)
+    },
+  },
+  mounted() {
+    this.$cms.lifeCycleHooks.mounted()
+  },
+  beforeCreate() {
+    this.$cms.lifeCycleHooks.beforeCreate()
+  },
+  created() {
+    this.$cms.lifeCycleHooks.created()
+  },
+  beforeMount() {
+    this.$cms.lifeCycleHooks.beforeMount()
+  },
+  beforeUpdate() {
+    this.$cms.lifeCycleHooks.beforeUpdate()
+  },
+  updated() {
+    this.$cms.lifeCycleHooks.updated()
+  },
+  beforeDestroy() {
+    this.$cms.lifeCycleHooks.beforeDestroy()
+  },
+  destroy() {
+    this.$cms.lifeCycleHooks.destroy()
   },
 }
 </script>

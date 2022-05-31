@@ -88,3 +88,7 @@ sw.*
 
 # Vim swap files
 *.swp
+
+#CMS
+static/api
+static/admin

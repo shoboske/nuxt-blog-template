@@ -1,33 +1,51 @@
 <template>
-  <section class="section">
-    <div class="columns is-mobile">
-      <card title="Free" icon="github">
-        Open source on <a href="https://github.com/buefy/buefy"> GitHub </a>
-      </card>
-
-      <card title="Responsive" icon="cellphone-link">
-        <b class="has-text-grey"> Every </b> component is responsive
-      </card>
-
-      <card title="Modern" icon="alert-decagram">
-        Built with <a href="https://vuejs.org/"> Vue.js </a> and
-        <a href="http://bulma.io/"> Bulma </a>
-      </card>
-
-      <card title="Lightweight" icon="arrange-bring-to-front">
-        No other internal dependency
-      </card>
-    </div>
-  </section>
+  <div id="home-page" class="page-wrapper home-page">
+    <site-hero :title="title" :subtitle="subtitle" :image="featureImage">
+      <button
+        v-if="$siteConfig.newsletter.on"
+        class="button is-primary"
+        @click="$eventBus.$emit('modal-triggered', 'newsletter-modal')"
+      >
+        Subscribe To Newsletter
+      </button>
+    </site-hero>
+    <main-section theme="one-column">
+      <template #default>
+        <!-- All Posts -->
+        <posts-grid />
+      </template>
+      <template #sidebar> Nothing here </template>
+    </main-section>
+    <news-letter-form-modal />
+  </div>
 </template>
 
 <script>
-import Card from '~/components/Card'
+import { mapState } from 'vuex'
+import { setPageData } from '../helper'
+import NewsLetterFormModal from '~/components/NewsLetterFormModal'
 
 export default {
-  name: 'IndexPage',
+  name: 'HomePage',
   components: {
-    Card,
+    NewsLetterFormModal,
+  },
+  fetch({ store }) {
+    setPageData(store, { slug: 'home' })
+  },
+  head() {
+    return {
+      title: `Home | ${this.$siteConfig.siteName}`,
+    }
+  },
+  computed: {
+    ...mapState(['title', 'subtitle', 'featureImage']),
   },
 }
 </script>
+
+<style>
+.home-page .under-subtitle {
+  border-top: none;
+}
+</style>

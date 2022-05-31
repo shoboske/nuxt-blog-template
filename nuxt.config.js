@@ -1,27 +1,28 @@
+import path from 'path'
+import glob from 'glob'
+import head from './config/head'
+import { modules, modulesSettings } from './config/modules'
+import plugins from './config/plugins'
+import build from './config/build'
+import css from './config/css'
+import { routeMap, otherRoutes } from './config/generate'
+
 export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
+  loading: { color: '#fff' },
   // Global page headers: https://go.nuxtjs.dev/config-head
-  head: {
-    title: 'nuxt-blog',
-    htmlAttrs: {
-      lang: 'en',
-    },
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' },
-    ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+  head,
+  generate: {
+    routes: otherRoutes.concat(getDynamicPaths(routeMap)),
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css,
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins,
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -33,11 +34,24 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    // https://go.nuxtjs.dev/buefy
-    'nuxt-buefy',
-  ],
+  modules,
+  ...modulesSettings,
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build,
+}
+
+/**
+ * Create an array of URLs from a list of files
+ * @param {*} urlFilepathTable
+ */
+function getDynamicPaths(urlFilepathTable) {
+  return [].concat(
+    ...Object.keys(urlFilepathTable).map((url) => {
+      const filepathGlob = urlFilepathTable[url]
+      return glob.sync(filepathGlob, { cwd: 'content' }).map((filepath) => {
+        return `${url}/${path.basename(filepath, '.md')}`
+      })
+    })
+  )
 }
