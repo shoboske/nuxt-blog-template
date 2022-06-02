@@ -46,7 +46,7 @@
     "typescript": "^4.7.2",
     "url-parse": "^1.5.10",
     "v-runtime-template": "^1.10.0",
-    "vue": "^2.6.14",
+    "vue": "^3.2.36",
     "vue-disqus": "^4.0.1",
     "vue-server-renderer": "^2.6.14",
     "vue-template-compiler": "^2.6.14",
