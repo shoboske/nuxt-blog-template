@@ -4,13 +4,7 @@ updates:
   - package-ecosystem: npm
     directory: '/'
     schedule:
-      interval: daily
-      time: '00:00'
-    open-pull-requests-limit: 10
-    reviewers:
-      - shoboske
-    assignees:
-      - shoboske
+      interval: monthly
     commit-message:
       prefix: fix
       prefix-development: chore
